@@ -66,6 +66,7 @@ static volatile float m_position_set;
 static volatile float m_temp_fet;
 static volatile float m_temp_motor;
 static volatile float v_in_last = 12.0;
+static volatile float v_in_last_array [16] = {};
 // new
 static volatile ppm_cruise cruise_control_status;
 
@@ -1372,7 +1373,12 @@ void mc_interface_adc_inj_int_handler(void) {
  */
 static void update_override_limits(volatile mc_configuration *conf) {
 	//const float v_in = GET_INPUT_VOLTAGE();
-	const float v_in = 0.05*GET_INPUT_VOLTAGE() + 0.95*v_in_last;
+	for(short i = 15; i >= 1; i--) v_in_last_array[i] = v_in_last_array[i-1];
+
+	v_in_last_array[0] = GET_INPUT_VOLTAGE();
+	const float v_in = 0;
+	for(short i = 0; i < 16; i++) v_in += v_in_last_array[i];
+	v_in /= 16;
 	v_in_last = v_in;
 	const float rpm_now = mc_interface_get_rpm();
 
