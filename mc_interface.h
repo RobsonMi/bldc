@@ -63,6 +63,7 @@ float mc_interface_get_tot_current_filtered(void);
 float mc_interface_get_tot_current_directional(void);
 float mc_interface_get_tot_current_directional_filtered(void);
 float mc_interface_get_tot_current_in(void);
+float mc_interface_get_voltage(void);
 float mc_interface_get_tot_current_in_filtered(void);
 int mc_interface_get_tachometer_value(bool reset);
 int mc_interface_get_tachometer_abs_value(bool reset);

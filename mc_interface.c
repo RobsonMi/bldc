@@ -65,6 +65,7 @@ static volatile float m_watt_seconds_charged;
 static volatile float m_position_set;
 static volatile float m_temp_fet;
 static volatile float m_temp_motor;
+static volatile float v_in_last = 12.0;
 // new
 static volatile ppm_cruise cruise_control_status;
 
@@ -981,6 +982,10 @@ void mc_interface_sample_print_data(debug_sampling_mode mode, uint16_t len, uint
 	}
 }
 
+float mc_interface_get_voltage(void){
+  return v_in_last;
+}
+
 /**
  * Get filtered MOSFET temperature. The temperature is pre-calculated, so this
  * functions is fast.
@@ -1366,7 +1371,9 @@ void mc_interface_adc_inj_int_handler(void) {
  * The configaration to update.
  */
 static void update_override_limits(volatile mc_configuration *conf) {
-	const float v_in = GET_INPUT_VOLTAGE();
+	//const float v_in = GET_INPUT_VOLTAGE();
+	const float v_in = 0.05*GET_INPUT_VOLTAGE() + 0.95*v_in_last;
+	v_in_last = v_in;
 	const float rpm_now = mc_interface_get_rpm();
 
 	UTILS_LP_FAST(m_temp_fet, NTC_TEMP(ADC_IND_TEMP_MOS), 0.1);
